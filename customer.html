@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบฟอร์มสั่งซื้อสินค้า</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Add Noto Sans Thai font -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Thai', sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1557683316-973673baf926?auto=format&fit=crop&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .backdrop-blur {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .lightbox.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90vh;
+            margin: auto;
+            cursor: zoom-out;
+            transform: scale(0.9);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .lightbox.show img {
+            transform: scale(1);
+        }
+        .admin-link {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            color: #4B5563;
+            text-decoration: none;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        .admin-link:hover {
+            background-color: rgba(255, 255, 255, 1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+    <a href="admin.html" class="admin-link">สำหรับผู้ดูแลระบบ</a>
+    <div class="w-full max-w-md">
+        <!-- Logo -->
+        <div class="flex justify-center mb-6">
+            <img src="https://scontent.fcnx4-1.fna.fbcdn.net/v/t39.30808-6/524129824_1256358152947410_4176729647871636738_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=RVWaWSdhP0sQ7kNvwEr6zBh&_nc_oc=AdmpyB34HhIMRQxXABtjZ7AYEmSL8qdVr_reBBu2P7wZsA3ZHPlHvGY3C-YWa4icRqM&_nc_zt=23&_nc_ht=scontent.fcnx4-1.fna&_nc_gid=QkTp1r7-2LxmnGSilt5oqw&oh=00_AfSDg5PKWGtgXq2DxuYiLCvpndBq5a38Yu2RdFolEEheAg&oe=68938A5E" alt="Logo" class="w-24 h-24 rounded-full shadow-lg border-4 border-white">
+        </div>
+        
+        <form class="bg-white/90 backdrop-blur p-8 md:p-10 rounded-2xl shadow-xl w-full border border-white/50">
+            <h2 class="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">สั่งซื้อสินค้า</h2>
+            
+            <div class="space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-600 font-medium mb-2" for="first-name">ชื่อ</label>
+                        <input class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all duration-300" 
+                               type="text" id="first-name" name="first-name" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-600 font-medium mb-2" for="last-name">นามสกุล</label>
+                        <input class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all duration-300" 
+                               type="text" id="last-name" name="last-name" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-gray-600 font-medium mb-2" for="phone">เบอร์โทรศัพท์</label>
+                    <input class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all duration-300" 
+                           type="tel" id="phone" name="phone" pattern="[0-9]{10}" required>
+                </div>
+
+                <div>
+                    <label class="block text-gray-600 font-medium mb-2" for="product">เลือกสินค้า</label>
+                    <select class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all duration-300 appearance-none bg-white" 
+                            id="product" name="product" required onchange="showProductDetails()">
+                        <option value="">กรุณาเลือกสินค้า</option>
+                        <option value="shirt">เสื้อครบรอบ 30 ปี</option>
+                        <option value="cap">หมวก CS30</option>
+                        <option value="cup">แก้วน้ำ CS30</option>
+                        <option value="cloth">ผ้าเช็ดหน้า CS30</option>
+                    </select>
+                </div>
+
+                <div id="product-details" class="hidden">
+                    <div class="p-6 bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl border border-blue-100 flex flex-col items-center gap-6">
+                        <img id="product-image" src="" alt="" 
+                             class="w-48 h-48 object-cover rounded-xl border border-blue-100 hidden shadow-lg hover:scale-105 transition-transform duration-300">
+                        <div class="w-full text-center space-y-2">
+                            <h3 class="font-semibold text-xl text-gray-800" id="product-title"></h3>
+                            <p class="text-gray-600 text-sm" id="product-description"></p>
+                            <p class="text-lg font-semibold text-blue-600" id="product-price"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-gray-600 font-medium mb-2" for="quantity">จำนวน</label>
+                    <input class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all duration-300" 
+                           type="number" id="quantity" name="quantity" min="1" value="1" required>
+                </div>
+
+                <!-- Add size selection section -->
+                <div id="size-section" class="hidden">
+                    <label class="block text-gray-600 font-medium mb-2" for="size">เลือกขนาด</label>
+                    <select class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all duration-300 appearance-none bg-white" 
+                            id="size" name="size" required onchange="updateStock()">
+                        <option value="">กรุณาเลือกขนาด</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                </div>
+
+                <!-- Add color selection -->
+                <div id="color-section" class="hidden">
+                    <label class="block text-gray-600 font-medium mb-2" for="color">เลือกสี</label>
+                    <select class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all duration-300 appearance-none bg-white" 
+                            id="color" name="color" required onchange="updateStock()">
+                        <option value="">กรุณาเลือกสี</option>
+                        <option value="black">สีดำ</option>
+                        <option value="white">สีขาว</option>
+                    </select>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2">วิธีการจัดส่ง</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="delivery" value="shipping" checked onchange="toggleAddress()" class="mr-2">
+                            จัดส่งถึงบ้าน
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="delivery" value="collect" onchange="toggleAddress()" class="mr-2">
+                            รับสินค้าเอง
+                        </label>
+                    </div>
+                </div>
+
+                <div id="shipping-address-section" class="mb-6">
+                    <label class="block text-gray-700 mb-2" for="address">ที่อยู่จัดส่ง</label>
+                    <textarea class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all duration-300" 
+                              id="address" name="address" rows="3" required></textarea>
+                </div>
+
+                <div id="collect-address-section" class="mb-6 hidden">
+                    <label class="block text-gray-700 mb-2">สถานที่รับสินค้า:</label>
+                    <div class="bg-gray-100 border rounded-lg px-4 py-3">
+                        ชั้น 6, อาคาร 60 ปี <br> คณะวิทยาศาสตร์ มหาวิทยาลัยแม่โจ้ <br>
+                        63 หมู่ 4 ต.หนองหาร อ.สันทราย จ.เชียงใหม่ 50290
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2">วิธีการชำระเงิน</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="payment" value="bank" checked onchange="togglePayment()" class="mr-2">
+                            โอนเงินผ่านธนาคาร
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="payment" value="cash" onchange="togglePayment()" class="mr-2">
+                            เงินสด
+                        </label>
+                    </div>
+                </div>
+
+                <div id="bank-slip-section" class="mb-6">
+                    <label class="block text-gray-700 mb-2" for="paymentslip">แนบสลิปการโอนเงิน</label>
+                    <input type="file" id="paymentslip" name="paymentslip" accept="image/*" 
+                           class="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/50 transition-all duration-300">
+                </div>
+
+                <!-- Add total price display before the payment section -->
+                <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700 font-medium">ราคารวม:</span>
+                        <span class="text-xl font-semibold text-blue-600" id="total-price">0 บาท</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-300">
+                    สั่งซื้อสินค้า
+                </button>
+
+                <!-- Add footer after the submit button -->
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <div class="text-center text-gray-600">
+                        <p class="font-medium">สาขาวิทยาการคอมพิวเตอร์ ครบรอบ 30 ปี</p>
+                        <p class="text-sm mt-1">คณะวิทยาศาสตร์ มหาวิทยาลัยแม่โจ้</p>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Add this lightbox HTML -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="" onclick="event.stopPropagation()">
+    </div>
+
+    <script>
+        function showProductDetails() {
+            const details = {
+                shirt: {
+                    title: "เสื้อครบรอบ 30 ปี สาขาวิทยาการคอมพิวเตอร์ ม.แม่โจ้",
+                    description: "มาพร้อมเนื้อผ้า Dry Tech ผ้าคุณภาพสูง ระบายอากาศได้ดี นิ่มสบาย ใส่ได้ทุกโอกาส",
+                    image: "https://scontent.fcnx4-1.fna.fbcdn.net/v/t39.30808-6/522624981_737045899081213_6789078957936994482_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=127cfc&_nc_ohc=oAHDiL3zT7cQ7kNvwHjJTfX&_nc_oc=AdnNAOJdvbz8k4NOetlNkcot90PMBDNJzRaBO1lERbWmJ1fSn--XjfBBxSOmSJrYppc&_nc_zt=23&_nc_ht=scontent.fcnx4-1.fna&_nc_gid=ORLuZ_BBVQawW9Xp8dd9Hg&oh=00_AfQnjPS9QofCTMFCfifYm237EO0mF5Nh-Lhzxwg4XgXTFw&oe=6893A44D",
+                    price: 320,
+                    stock: {
+                        black: {
+                            S: 10,
+                            M: 15,
+                            L: 20,
+                            XL: 8
+                        },
+                        white: {
+                            S: 12,
+                            M: 18,
+                            L: 15,
+                            XL: 10
+                        }
+                    }
+                },
+                cap: {
+                    title: "หมวก CS30 ครบรอบ 30 ปี",
+                    description: "หมวกแก๊ปสุดพิเศษ จัดทำขึ้นในโอกาสครบรอบ 30 ปี สาขาวิทยาการคอมพิวเตอร์",
+                    image: "https://www.ryderamies.co.uk/wp-content/uploads/2025/03/VIN-GR-463x625.jpg",
+                    price: 150,
+                    stock: 50
+                },
+                cup: {
+                    title: "แก้วน้ำ CS30 ครบรอบ 30 ปี",
+                    description: "แก้วน้ำที่ระลึก ครบรอบ 30 ปี สาขาวิทยาการคอมพิวเตอร์ พร้อมโลโก้สุดพิเศษ",
+                    image: "https://cdn11.bigcommerce.com/s-t7eek7ie3q/images/stencil/500w/products/3132/1787/IMG_0673__94583.1739217985.jpg",
+                    price: 100,
+                    stock: 30
+                },
+                cloth: {
+                    title: "ผ้าเช็ดหน้า CS30 ครบรอบ 30 ปี",
+                    description: "ผ้าเช็ดหน้าที่ระลึก คุณภาพดี พร้อมสกรีนโลโก้ครบรอบ 30 ปี",
+                    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-xpn7f5Gz1W3m_TFUaYwJ_61zCThgE3wLMg&sw=1280",
+                    price: 100,
+                    stock: 40
+                }
+            };
+
+            const select = document.getElementById('product');
+            const value = select.value;
+            const detailsDiv = document.getElementById('product-details');
+            const sizeSection = document.getElementById('size-section');
+            const colorSection = document.getElementById('color-section');
+            const quantityInput = document.getElementById('quantity');
+            const img = document.getElementById('product-image');
+
+            if (details[value]) {
+                document.getElementById('product-title').textContent = details[value].title;
+                document.getElementById('product-description').textContent = details[value].description;
+                
+                // Show size and color selection for shirt
+                if (value === 'shirt') {
+                    sizeSection.classList.remove('hidden');
+                    colorSection.classList.remove('hidden');
+                    document.getElementById('size').required = true;
+                    document.getElementById('color').required = true;
+                    quantityInput.max = ''; // Will be set when size and color are selected
+                    document.getElementById('product-price').textContent = 
+                        `${details[value].price.toLocaleString()} บาท`;
+                } else {
+                    sizeSection.classList.add('hidden');
+                    colorSection.classList.add('hidden');
+                    document.getElementById('size').required = false;
+                    document.getElementById('color').required = false;
+                    quantityInput.max = details[value].stock;
+                    document.getElementById('product-price').textContent = 
+                        `${details[value].price.toLocaleString()} บาท (เหลือ ${details[value].stock} ชิ้น)`;
+                }
+
+                img.src = details[value].image;
+                img.alt = details[value].title;
+                img.classList.remove('hidden');
+                img.style.cursor = 'zoom-in';
+                img.onclick = () => openLightbox(details[value].image);
+                detailsDiv.classList.remove('hidden');
+                calculateTotal(details[value].price);
+            } else {
+                img.classList.add('hidden');
+                detailsDiv.classList.add('hidden');
+                sizeSection.classList.add('hidden');
+                colorSection.classList.add('hidden');
+                calculateTotal(0);
+            }
+        }
+
+        function calculateTotal(price) {
+            const quantity = parseInt(document.getElementById('quantity').value) || 0;
+            const total = price * quantity;
+            document.getElementById('total-price').textContent = `${total.toLocaleString()} บาท`;
+        }
+
+        function updateStock() {
+            const product = document.getElementById('product').value;
+            const size = document.getElementById('size').value;
+            const color = document.getElementById('color').value;
+            const quantityInput = document.getElementById('quantity');
+            const details = {
+                shirt: {
+                    price: 320,
+                    stock: {
+                        black: {
+                            S: 10,
+                            M: 15,
+                            L: 20,
+                            XL: 8
+                        },
+                        white: {
+                            S: 12,
+                            M: 18,
+                            L: 15,
+                            XL: 10
+                        }
+                    }
+                }
+            };
+
+            if (product === 'shirt' && size && color) {
+                const stock = details.shirt.stock[color][size];
+                quantityInput.max = stock;
+                document.getElementById('product-price').textContent = 
+                    `${details.shirt.price.toLocaleString()} บาท (สี${color === 'black' ? 'ดำ' : 'ขาว'} ไซส์ ${size} เหลือ ${stock} ชิ้น)`;
+            }
+        }
+
+        // Update the quantity change event listener
+        document.getElementById('quantity').addEventListener('change', function() {
+            const select = document.getElementById('product');
+            const details = {
+                shirt: 320,
+                cap: 150,
+                cup: 100,
+                cloth: 100
+            };
+            const price = details[select.value] || 0;
+            
+            // Validate quantity against stock
+            const max = parseInt(this.max);
+            if (max && parseInt(this.value) > max) {
+                this.value = max;
+            }
+            
+            calculateTotal(price);
+        });
+
+        function toggleAddress() {
+            const shippingSection = document.getElementById('shipping-address-section');
+            const collectSection = document.getElementById('collect-address-section');
+            const shippingRadio = document.querySelector('input[name="delivery"][value="shipping"]');
+            const addressTextarea = document.getElementById('address');
+            if (shippingRadio.checked) {
+                shippingSection.classList.remove('hidden');
+                collectSection.classList.add('hidden');
+                addressTextarea.required = true;
+            } else {
+                shippingSection.classList.add('hidden');
+                collectSection.classList.remove('hidden');
+                addressTextarea.required = false;
+            }
+        }
+
+        function togglePayment() {
+            const bankSection = document.getElementById('bank-slip-section');
+            const bankRadio = document.querySelector('input[name="payment"][value="bank"]');
+            const slipInput = document.getElementById('paymentslip');
+            if (bankRadio.checked) {
+                bankSection.classList.remove('hidden');
+                slipInput.required = true;
+            } else {
+                bankSection.classList.add('hidden');
+                slipInput.required = false;
+            }
+        }
+
+        // Ensure correct section is shown on page load
+        window.onload = function() {
+            toggleAddress();
+            togglePayment();
+            showProductDetails();
+        };
+
+        // Add these new functions
+        function openLightbox(imgSrc) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = imgSrc;
+            lightbox.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // Add keyboard support for closing lightbox
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
